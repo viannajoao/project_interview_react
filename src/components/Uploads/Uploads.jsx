@@ -10,49 +10,44 @@ export function Uploads() {
   const [descricao, setDescricao] = useState('');
   const [showImage, setShowImage] = useState(false);
 
-  // useEffect(() => {
-  //   const savedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
-  //   setFile(savedFiles);
-  // }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem('uploadedFiles', JSON.stringify(file));
-  // }, [file]);
 
   async function handleFile(event, description) {
-    event.preventDefault()
+    // event.preventDefault()
     console.log(event.target.files);
     if (event.target.files && event.target.files.length > 0) {
       const files = event.target.files[0];
       const base64File = await toBase64(files);
       setTempFile({ base64File: base64File, description: description, type: files.type, name: files.name })
-      
+
     } else {
       console.log("nenhum arquivo selecionado")
     }
   }
 
   function handleDescricao(event) {
-    console.log(event.target.value)
-    console.log(descricao)
     setDescricao(event.target.value)
   }
 
-  function handleUpload() {
-    event.preventDefault()
+  function handleUpload(event) {
+    event.preventDefault();
     if (tempFile) {
-      tempFile.description = descricao
-      setFile(prevFiles => [
-        ...prevFiles,
-        tempFile
-      ]);
-      setShowImage(true)
+      const newFile = { ...tempFile, description: descricao };
+      setFile(prevFiles => {
+        const updatedFiles = [...prevFiles, newFile];
+        localStorage.setItem('uploadedFiles', JSON.stringify(updatedFiles));
+        return updatedFiles;
+      });
       setTempFile(null);
       setDescricao('');
     }
-    
-    
   }
+
+  useEffect(() => {
+    const savedFiles = JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+    setFile(savedFiles);
+  }, []);
+
+
 
 
   return (
@@ -71,14 +66,14 @@ export function Uploads() {
         <button onClick={handleUpload}>Upload</button>
       </form>
 
-      {showImage && file.length > 0 ? ( // Renderiza a imagem se showImage for true
+      {file.length > 0 ? ( // Renderiza a imagem se showImage for true
         <>
-        <h3>Suas imagens e videos renderizados</h3>
-        <div className={style.arquivos}>
-          {file.map((item, index) => (
-            <Arquivo key={index} file={item} descricao={item.description}/> // Passa o objeto file para Arquivo
-          ))}
-        </div>
+          <h3>Suas imagens e videos renderizados</h3>
+          <div className={style.arquivos}>
+            {file.map((item, index) => (
+              <Arquivo key={index} file={item} descricao={item.description} /> // Passa o objeto file para Arquivo
+            ))}
+          </div>
         </>
       ) : (
         <h3>Sem imagens ou videos renderizados</h3>
