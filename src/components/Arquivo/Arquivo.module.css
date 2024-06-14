@@ -1,0 +1,17 @@
+.arquivo{
+   /* width: 100%; */
+  margin-top: 1.5rem;
+
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* padding: 1.5rem; */
+  /* gap: 1.5rem;  */
+}
+
+
+.arquivo img, .arquivo video{
+  /* background: green; */
+  max-width: 200px;
+  height: auto;
+  /* display: flex; */
+}
